@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Robinwaita
+Exec=/path/to/Robinwaita/build/robinwaita
+Icon=robinwaita
+Terminal=false
+Type=Application
+Categories=Utility;
+Path=/path/to/Robinwaita/build/

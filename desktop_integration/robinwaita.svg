@@ -1,0 +1,22 @@
+<svg width="136px" height="136px" viewBox="0 0 136 136" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet">
+    <defs>
+        <linearGradient x1="-8.60422844e-14%" y1="50%" x2="100%" y2="50%" id="linearGradient-7cccihn7sv-1">
+            <stop stop-color="#EEEEEE" stop-opacity="0" offset="0.00546328671%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0.620410839" offset="50.0398572%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon" transform="translate(-12, -10)"> 
+            <rect id="Window-Depth" fill="#6E9AB8" x="12" y="29" width="135" height="103" rx="8"></rect>
+            <rect id="Grad2" fill-opacity="0.75" fill="url(#linearGradient-7cccihn7sv-1)" x="12" y="117" width="9" height="15"></rect>
+            <rect id="Grad1" fill-opacity="0.75" fill="url(#linearGradient-7cccihn7sv-1)" x="139" y="117" width="9" height="15"></rect>
+            <rect id="Window" fill="#94C5E7" x="12" y="21" width="135" height="103" rx="8"></rect>
+            <g id="Arrows" transform="translate(41.3204, 44.5441)" stroke="#436D8A" stroke-opacity="0.75" stroke-width="11">
+                <polyline id="Path" points="1.90160699e-14 59 29.5 29.5 -1.62761328e-16 -4.13877319e-16"></polyline>
+                <polyline id="Path" points="46 59 75.5 29.5 46 -4.13877319e-16"></polyline>
+            </g>
+            <circle id="Close-Button" fill-opacity="0.75" fill="#436D8A" cx="132" cy="36" r="5"></circle>
+        </g>
+    </g>
+</svg>

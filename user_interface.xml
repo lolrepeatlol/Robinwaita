@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <object class="AdwWindow" id="main_window">
+        <child>
+            <object class="AdwToolbarView">
+                <!-- top toolbar -->
+                <child type="top">
+                    <object class="AdwHeaderBar" id="header_bar">
+                        <property name="title-widget">
+                            <object class="AdwViewSwitcher" id="view_switcher">
+                                <property name="stack">stack</property>
+                                <property name="policy">wide</property>
+                            </object>
+                        </property>
+                    </object>
+                </child>
+
+                <!-- main content -->
+                <property name="content">
+                    <object class="AdwViewStack" id="stack">
+                        <!-- page 1 -->
+                        <child>
+                            <object class="AdwViewStackPage" id="view1">
+                                <property name="name">view1</property>
+                                <property name="title">Scheduler</property>
+                                <property name="icon-name">computer-symbolic</property>
+                                <property name="child">
+                                    <object class="GtkBox" id="view1box">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">10</property>
+                                        <child>
+                                            <object class="GtkBox" id="programTitleBox">
+                                                <property name="margin-top">40</property>
+                                                <property name="margin-bottom">40</property>
+                                                <property name="margin-start">40</property>
+                                                <property name="margin-end">40</property>
+                                                <property name="orientation">vertical</property>
+                                                <child>
+                                                    <object class="GtkLabel" id="programTitle">
+                                                        <property name="halign">center</property>
+                                                        <property name="valign">center</property>
+                                                        <property name="label">All Processes</property>
+                                                        <style>
+                                                            <class name="large-title"/>
+                                                        </style>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkLabel" id="programDescription">
+                                                        <property name="halign">center</property>
+                                                        <property name="margin-top">10</property>
+                                                        <property name="label">Run the round-robin process scheduler, or add new processes to the queue here.</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkBox" id="schedulerAndAddBox">
+                                                <property name="orientation">horizontal</property>
+                                                <property name="spacing">20</property>
+                                                <property name="margin-start">20</property>
+                                                <property name="margin-end">20</property>
+                                                <property name="hexpand">True</property>
+                                                <child>
+                                                    <object class="GtkBox" id="schedulerBox">
+                                                        <property name="orientation">horizontal</property>
+                                                        <property name="spacing">5</property>
+                                                        <property name="hexpand">True</property>
+                                                        <child>
+                                                            <object class="GtkScrolledWindow" id="scrolledWindow">
+                                                                <property name="vexpand">True</property>
+                                                                <property name="hexpand">True</property>
+                                                                <property name="hscrollbar-policy">GTK_POLICY_AUTOMATIC</property>
+                                                                <property name="vscrollbar-policy">GTK_POLICY_AUTOMATIC</property>
+                                                                <child>
+                                                                    <object class="GtkTextView" id="ProcessList">
+                                                                        <property name="editable">False</property>
+                                                                        <property name="wrap-mode">none</property>
+                                                                        <property name="left-margin">10</property>
+                                                                        <property name="right-margin">10</property>
+                                                                        <property name="hexpand">True</property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkBox" id="addButtonsBox">
+                                                        <property name="orientation">vertical</property>
+                                                        <property name="spacing">10</property>
+                                                        <property name="halign">end</property>
+                                                        <property name="hexpand">False</property>
+                                                        <property name="valign">center</property>
+                                                        <child>
+                                                            <object class="GtkLabel" id="addProcessesTitle">
+                                                                <property name="label">Add Process</property>
+                                                                <property name="halign">start</property>
+                                                                <property name="margin-bottom">10</property>
+                                                                <style>
+                                                                    <class name="heading"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkBox" id="newCPU">
+                                                                <property name="orientation">horizontal</property>
+                                                                <child>
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label">CPU-Bound</property>
+                                                                        <property name="halign">start</property>
+                                                                        <property name="hexpand">True</property>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
+                                                                    <object class="GtkButton" id="cpuButton">
+                                                                        <property name="margin-start">15</property>
+                                                                        <property name="halign">end</property>
+                                                                        <property name="hexpand">False</property>
+                                                                        <property name="child">
+                                                                            <object class="AdwButtonContent">
+                                                                                <property name="icon-name">list-add-symbolic</property>
+                                                                                <property name="label" translatable="yes">Add</property>
+                                                                                <property name="use-underline">False</property>
+                                                                            </object>
+                                                                        </property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkBox" id="newIO">
+                                                                <property name="orientation">horizontal</property>
+                                                                <child>
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label">IO-Bound</property>
+                                                                        <property name="halign">start</property>
+                                                                        <property name="hexpand">True</property>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
+                                                                    <object class="GtkButton" id="ioButton">
+                                                                        <property name="margin-start">15</property>
+                                                                        <property name="halign">end</property>
+                                                                        <property name="hexpand">False</property>
+                                                                        <property name="child">
+                                                                            <object class="AdwButtonContent">
+                                                                                <property name="icon-name">list-add-symbolic</property>
+                                                                                <property name="label" translatable="yes">Add</property>
+                                                                                <property name="use-underline">False</property>
+                                                                            </object>
+                                                                        </property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkBox" id="newMixed">
+                                                                <property name="orientation">horizontal</property>
+                                                                <child>
+                                                                    <object class="GtkLabel">
+                                                                        <property name="label">Mixed-Bound</property>
+                                                                        <property name="halign">start</property>
+                                                                        <property name="hexpand">True</property>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
+                                                                    <object class="GtkButton" id="mixedButton">
+                                                                        <property name="margin-start">15</property>
+                                                                        <property name="halign">end</property>
+                                                                        <property name="hexpand">False</property>
+                                                                        <property name="child">
+                                                                            <object class="AdwButtonContent">
+                                                                                <property name="icon-name">list-add-symbolic</property>
+                                                                                <property name="label" translatable="yes">Add</property>
+                                                                                <property name="use-underline">False</property>
+                                                                            </object>
+                                                                        </property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkButton" id="runAllButton">
+                                                <property name="margin-start">20</property>
+                                                <property name="margin-end">20</property>
+                                                <property name="margin-top">10</property>
+                                                <property name="margin-bottom">30</property>
+                                                <property name="halign">center</property>
+                                                <property name="width-request">200</property>
+                                                <property name="child">
+                                                    <object class="AdwButtonContent">
+                                                        <property name="icon-name">media-playback-start-symbolic</property>
+                                                        <property name="label" translatable="yes">Run All</property>
+                                                        <property name="use-underline">False</property>
+                                                    </object>
+                                                </property>
+                                                <style>
+                                                    <class name="pill"/>
+                                                    <class name="suggested-action"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </property>
+                            </object>
+                        </child>
+
+                        <!-- page 2 -->
+                        <child>
+                            <object class="AdwViewStackPage" id="stats">
+                                <property name="name">stats</property>
+                                <property name="title">Statistics</property>
+                                <property name="icon-name">power-profile-performance-symbolic</property>
+                                <property name="child">
+                                    <object class="GtkBox" id="view2box">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">10</property>
+                                        <child>
+                                            <object class="GtkBox" id="statisticsTitleBox">
+                                                <property name="margin-top">40</property>
+                                                <property name="margin-bottom">40</property>
+                                                <property name="margin-start">40</property>
+                                                <property name="margin-end">40</property>
+                                                <property name="orientation">vertical</property>
+                                                <child>
+                                                    <object class="GtkLabel" id="statisticsTitle">
+                                                        <property name="halign">center</property>
+                                                        <property name="valign">center</property>
+                                                        <property name="label">Your Last Run</property>
+                                                        <style>
+                                                            <class name="large-title"/>
+                                                        </style>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkLabel" id="schedulerDescription">
+                                                        <property name="halign">center</property>
+                                                        <property name="margin-top">10</property>
+                                                        <property name="label">View information on the scheduler's last run here.</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkBox" id="StatisticsBox">
+                                                <property name="margin-bottom">40</property>
+                                                <property name="margin-start">40</property>
+                                                <property name="margin-end">40</property>
+                                                <property name="orientation">vertical</property>
+                                                <child>
+                                                    <object class="GtkListBox">
+                                                        <property name="selection-mode">none</property>
+                                                        <style>
+                                                            <class name="boxed-list"/>
+                                                        </style>
+                                                        <child>
+                                                            <object class="AdwActionRow" id="averageRunningTimeRow">
+                                                                <property name="title">Average Running Time</property>
+                                                                <property name="subtitle">Run to get results</property>
+                                                                <property name="subtitle-selectable">false</property>
+                                                                <style>
+                                                                    <class name="property"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="AdwActionRow" id="totalContextSwitchesRow">
+                                                                <property name="title">Total Context Switches</property>
+                                                                <property name="subtitle">Run to get results</property>
+                                                                <property name="subtitle-selectable">false</property>
+                                                                <style>
+                                                                    <class name="property"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="AdwActionRow">
+                                                                <property name="title">Time Quantum</property>
+                                                                <property name="subtitle">1 second</property>
+                                                                <property name="subtitle-selectable">false</property>
+                                                                <style>
+                                                                    <class name="property"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkLabel" id="madeWithLove">
+                                                        <property name="halign">center</property>
+                                                        <property name="margin-top">40</property>
+                                                        <property name="label">Robinwaita 1.0.0 -- made with ❤️ by Alexei S</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </property>
+                            </object>
+                        </child>
+                    </object>
+                </property>
+
+                <!-- bottom toolbar -->
+                <child type="bottom">
+                    <object class="AdwViewSwitcherBar" id="switcher_bar">
+                        <property name="stack">stack</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>
