@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 void updateStatistics(gpointer userData){
     initData *data = (initData *) userData;
     AdwActionRow *averageRunningTimeRow, *totalContextSwitchesRow;
-    double averageTime = data->totalTime / data->processAmt;
+    gdouble averageTime = data->totalTime / data->processAmt;
 
     //get objects from builder
     averageRunningTimeRow = ADW_ACTION_ROW(gtk_builder_get_object(data->builder, "averageRunningTimeRow"));
