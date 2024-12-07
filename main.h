@@ -33,6 +33,14 @@ typedef struct initData {
     //in-memory buffer
     GString *logBuffer;
 
+    //textview callback information
+    logCallback textCallback;
+    void *textCallbackData;
+
+    //timer info callback information
+    timerCallback timerInfoCallback;
+    void *timerCallbackData;
+
 } initData;
 
 void updateStatistics(gpointer userData); //calculate & update statistics screen
@@ -44,6 +52,8 @@ void addMixedProcess(GtkWidget *widget, gpointer userData); //button to add mixe
 void updateButtonSensitivity(initData *data, gboolean sensitive); //gray out buttons if scheduler is running
 void runScheduler(GtkButton *button, gpointer userData); //init & start running scheduler
 static void activate(GtkApplication *app, gpointer userData); //init gtk window objects
+static void handleLog(const char *message, void *userData); //log to gtk buffer from process scheduling code
+static void handleTimerRemoval(unsigned timerID, void *userData); //remove gio timer watch from process scheduling code
 void scrollToBottom(GtkTextView *textView); //keep gtk textview scrolled to bottom
 void appendTextToView(const char *text, GtkTextView *textView); //add text to gtk textview
 gboolean updateTextviewFromLog(gpointer userData); //copy text from buffer and call appendTextToView with the text

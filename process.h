@@ -1,7 +1,10 @@
 #ifndef ROBINWAITA_PROCESS_H
 #define ROBINWAITA_PROCESS_H
 #include <sys/time.h>
-#include <gtk/gtk.h>
+
+//callbacks for log and timer (for some separation of UI and process management)
+typedef void (*logCallback)(const char *message, void *user_data);
+typedef void (*timerCallback)(unsigned int timer_id, void *user_data);
 
 typedef struct initData initData;
 
@@ -18,5 +21,7 @@ Process *newProcess(int processType); //create new process struct
 void startProcess(Process *process, initData *data); //start process (fork into child and then execute python process)
 void stopProcess(Process *process, initData *data); //stop process
 void continueProcess(Process *process, initData *data); //continue process from stop
+void setLogCallback(struct initData *data, logCallback callback, void *userData); //set callback function for logs
+void setTimerCallback(struct initData *data, timerCallback callback, void *userData); //set callback function for timer info
 
 #endif //ROBINWAITA_PROCESS_H
