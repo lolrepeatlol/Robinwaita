@@ -30,8 +30,9 @@ typedef struct initData {
     //gtk builder
     GtkBuilder *builder;
 
-    //in-memory buffer
+    //in-memory buffer & mutex
     GString *logBuffer;
+    GMutex logMutex;
 
     //textview callback information
     logCallback textCallback;
