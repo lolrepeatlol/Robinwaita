@@ -4,7 +4,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <glib-unix.h>
 #include "process.h"
 #include "main.h"
 
@@ -100,9 +99,12 @@ void startProcess(Process *process, initData *data) {
         process->state = 1;
 
         //append message for gtktextview
-        gchar *message = g_strdup_printf("Started process %d (%s)\n", pid, process->name);
-        g_string_append(data->logBuffer, message);
-        g_free(message);
+        char message[256];
+        snprintf(message, sizeof(message), "Started process %d (%s)\n", pid, process->name);
+        //append message
+        if(data->textCallback){
+            data->textCallback(message, data->textCallbackData);
+        }
     } else { //fork failed
         perror("startProcess: fork failed");
     }
@@ -120,9 +122,11 @@ void stopProcess(Process *process, initData *data) {
         } else {
             process->state = 2;
 
-            gchar *message = g_strdup_printf("Stopped process %d (%s)\n", process->pid, process->name);
-            g_string_append(data->logBuffer, message);
-            g_free(message);
+            char message[256];
+            snprintf(message, sizeof(message), "Stopped process %d (%s)\n", process->pid, process->name);
+            if (data->textCallback) {
+                data->textCallback(message, data->textCallbackData);
+            }
         }
     } else if (result > 0) {
         //process has already finished
@@ -140,10 +144,23 @@ void continueProcess(Process *process, initData *data) {
         fprintf(stderr, "Program %d failed to resume\n", process->pid); //print error to stderr
         exit(EXIT_FAILURE);
     } else {
-        gchar *message = g_strdup_printf("Continued process %d (%s)\n", process->pid, process->name);
-        g_string_append(data->logBuffer, message);
-        g_free(message);
+        char message[256];
+        snprintf(message, sizeof(message), "Continued process %d (%s)\n", process->pid, process->name);
+        //append message
+        if (data->textCallback) {
+            data->textCallback(message, data->textCallbackData);
+        }
 
         process->state = 1;
     }
+}
+
+void setLogCallback(struct initData *data, logCallback callback, void *userData) {
+    data->textCallback = callback;
+    data->textCallbackData = userData;
+}
+
+void setTimerCallback(struct initData *data, timerCallback callback, void *userData) {
+    data->timerInfoCallback = callback;
+    data->timerCallbackData = userData;
 }

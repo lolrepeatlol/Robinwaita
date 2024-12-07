@@ -6,13 +6,15 @@
 #include <sys/timerfd.h>
 #include <unistd.h>
 #include <time.h>
-#include <gtk/gtk.h>
 #include "main.h"
 
 void displayProcess(Process *p, Queue *q, initData *data){
-    gchar *output = g_strdup_printf("Process %d: %s\n", q->numElements, p->name);
-    g_string_append(data->logBuffer, output);
-    g_free(output);
+    char message[256];
+    snprintf(message, sizeof(message), "Process %d: %s\n", q->numElements, p->name);
+    //append message
+    if(data->textCallback){
+        data->textCallback(message, data->textCallbackData);
+    }
 }
 
 void initQueue(Queue *q){
@@ -125,16 +127,20 @@ void manageQueue(struct initData *data) {
             perror("manageQueue: Error closing timerfd");
         } else {
             data->schedulerRunning = 0;
-            gchar *message = g_strdup_printf("All processes have finished executing. Timer stopped.\n");
-            g_string_append(data->logBuffer, message);
-            g_free(message);
+
+            char message[256];
+            snprintf(message, sizeof(message), "All processes have finished executing. Timer stopped.\n");
+            //append message
+            if(data->textCallback){
+                data->textCallback(message, data->textCallbackData);
+            }
 
             updateStatistics(data);
             updateButtonSensitivity(data, TRUE);
 
             //remove the giochannel watch
-            if (data->timerWatchID != 0) {
-                g_source_remove(data->timerWatchID);
+            if (data->timerWatchID != 0 && data->timerInfoCallback) {
+                data->timerInfoCallback(data->timerWatchID, data->timerCallbackData);
                 data->timerWatchID = 0;
             }
 
@@ -184,9 +190,12 @@ void addElapsedTime(Process *p, double *totalTime, initData *data) {
     long microseconds = p->endTime.tv_usec - p->startTime.tv_usec;
     double processTime = (double) seconds + (double) microseconds * 1e-6;
 
-    gchar *message = g_strdup_printf("The %s process took %.0f seconds to complete.\n", p->name, processTime);
-    g_string_append(data->logBuffer, message);
-    g_free(message);
+    char message[256];
+    snprintf(message, sizeof(message), "The %s process took %.0f seconds to complete.\n", p->name, processTime);
+    //append message
+    if(data->textCallback){
+        data->textCallback(message, data->textCallbackData);
+    }
 
     *totalTime += processTime;
 

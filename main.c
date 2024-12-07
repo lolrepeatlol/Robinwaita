@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     //allocate initialData
     struct initData *initialData = malloc(sizeof(struct initData));
     if (initialData == NULL) {
-        g_print("Failed to allocate memory for initialData");
+        g_printerr("Failed to allocate memory for initialData\n");
         return -1;
     }
 
@@ -41,9 +41,9 @@ void updateStatistics(gpointer userData){
 
     //get objects from builder
     averageRunningTimeRow = ADW_ACTION_ROW(gtk_builder_get_object(data->builder, "averageRunningTimeRow"));
-    if(!averageRunningTimeRow) g_print("Error: averageRunningTimeRow is NULL\n");
+    if(!averageRunningTimeRow) g_printerr("Error: averageRunningTimeRow is NULL\n");
     totalContextSwitchesRow = ADW_ACTION_ROW(gtk_builder_get_object(data->builder, "totalContextSwitchesRow"));
-    if(!totalContextSwitchesRow) g_print("Error: totalContextSwitchesRow is NULL\n");
+    if(!totalContextSwitchesRow) g_printerr("Error: totalContextSwitchesRow is NULL\n");
 
     //format strings
     gchar *averageTimeStr = g_strdup_printf("%.1lf seconds", averageTime);
@@ -65,7 +65,7 @@ gboolean schedulerUpdateFromTimerfd(gint fd, GIOCondition condition, gpointer us
         uint64_t expirations;
         ssize_t bytes = read(fd, &expirations, sizeof(expirations));
         if (bytes != sizeof(expirations)) {
-            g_print("Warning: read unexpected number of bytes from timerfd\n");
+            g_printerr("Warning: read unexpected number of bytes from timerfd\n");
         }
 
         //scheduler logic
@@ -115,7 +115,7 @@ void runScheduler(GtkButton *button, gpointer userData) {
     initData *data = (initData *)userData;
 
     if (data->schedulerRunning) {
-        g_print("Scheduler is already running.\n");
+        g_printerr("Scheduler is already running.\n");
         return;
     }
 
@@ -128,14 +128,14 @@ void runScheduler(GtkButton *button, gpointer userData) {
     data->timerfd = timerSetup(data->allProcesses);
 
     if (data->timerfd == -1) {
-        g_print("Failed to set up the scheduler timer.\n");
+        g_printerr("Failed to set up the scheduler timer.\n");
         return;
     }
 
     //add timerfd to glib main loop to monitor it
     data->timerWatchID = g_unix_fd_add(data->timerfd, G_IO_IN | G_IO_HUP, (GUnixFDSourceFunc) schedulerUpdateFromTimerfd, data);
     if (data->timerWatchID == 0) {
-        g_print("Failed to add timerfd to main loop.\n");
+        g_printerr("Failed to add timerfd to main loop.\n");
         close(data->timerfd);
         return;
     }
@@ -158,7 +158,7 @@ static void activate(GtkApplication *app, gpointer userData) {
     //retrieve textview
     processListView = GTK_WIDGET(gtk_builder_get_object(data->builder, "ProcessList"));
     if (!processListView) {
-        g_print("Error: processListView is NULL\n");
+        g_printerr("Error: processListView is NULL\n");
     } else {
         data->textView = GTK_TEXT_VIEW(processListView);
     }
@@ -166,27 +166,27 @@ static void activate(GtkApplication *app, gpointer userData) {
     //connect "run all" button to scheduler
     runButton = GTK_WIDGET(gtk_builder_get_object(data->builder, "runAllButton"));
     if (!runButton)
-        g_print("Error: runButton is NULL\n");
+        g_printerr("Error: runButton is NULL\n");
     else
         g_signal_connect(runButton, "clicked", G_CALLBACK(runScheduler), data);
 
     //connect all buttons
     cpuButton = GTK_WIDGET(gtk_builder_get_object(data->builder, "cpuButton"));
     if (!cpuButton)
-        g_print("Error: cpuButton is NULL\n");
+        g_printerr("Error: cpuButton is NULL\n");
     else
         g_signal_connect(cpuButton, "clicked", G_CALLBACK(addCPUProcess), data);
 
     ioButton = GTK_WIDGET(gtk_builder_get_object(data->builder, "ioButton"));
     if (!ioButton) {
-        g_print("Error: ioButton is NULL\n");
+        g_printerr("Error: ioButton is NULL\n");
     } else {
         g_signal_connect(ioButton, "clicked", G_CALLBACK(addIOProcess), data);
     }
 
     mixedButton = GTK_WIDGET(gtk_builder_get_object(data->builder, "mixedButton"));
     if (!mixedButton) {
-        g_print("Error: mixedButton is NULL\n");
+        g_printerr("Error: mixedButton is NULL\n");
     } else {
         g_signal_connect(mixedButton, "clicked", G_CALLBACK(addMixedProcess), data);
     }
@@ -202,13 +202,28 @@ static void activate(GtkApplication *app, gpointer userData) {
     //allocate queue
     data->allProcesses = (Queue *) malloc(sizeof(Queue));
     if (data->allProcesses == NULL) {
-        perror("main: Couldn't allocate memory for process queue");
+        g_printerr("main: Couldn't allocate memory for process queue");
         exit(1);
     }
     initQueue(data->allProcesses); //initialize variables
 
+    //set callback functions
+    setLogCallback(data, handleLog, data);
+    setTimerCallback(data, handleTimerRemoval, data);
+
     //show gtk window
     gtk_window_present(GTK_WINDOW(window));
+}
+
+static void handleLog(const char *message, void *userData) {
+    struct initData *data = userData;
+    gchar *glibMessage = g_strdup_printf("%s", message);
+    g_string_append(data->logBuffer, glibMessage);
+    g_free(glibMessage);
+}
+
+static void handleTimerRemoval(unsigned timerID, void *userData){
+    g_source_remove(timerID);
 }
 
 void scrollToBottom(GtkTextView *textView) {
@@ -223,13 +238,13 @@ void scrollToBottom(GtkTextView *textView) {
 
 void appendTextToView(const char *text, GtkTextView *textView) {
     if (!textView) {
-        g_print("Error: textView is NULL in appendTextToView\n");
+        g_printerr("Error: textView is NULL in appendTextToView\n");
         return;
     }
 
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(textView);
     if (!buffer) {
-        g_print("Error: GtkTextBuffer is NULL\n");
+        g_printerr("Error: GtkTextBuffer is NULL\n");
         return;
     }
 
