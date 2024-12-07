@@ -20,6 +20,9 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    //init mutex for text buffer
+    g_mutex_init(&initialData->logMutex);
+
     //create the gtk application and pass initialData to activate
     app = adw_application_new("com.asolonari.Robinwaita", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(activate), initialData);
@@ -218,7 +221,11 @@ static void activate(GtkApplication *app, gpointer userData) {
 static void handleLog(const char *message, void *userData) {
     struct initData *data = userData;
     gchar *glibMessage = g_strdup_printf("%s", message);
+
+    g_mutex_lock(&data->logMutex);
     g_string_append(data->logBuffer, glibMessage);
+    g_mutex_unlock(&data->logMutex);
+
     g_free(glibMessage);
 }
 
@@ -272,11 +279,17 @@ gboolean updateTextviewFromLog(gpointer userData) {
     initData *data = (initData *) userData;
 
     if (data->logBuffer->len > 0) {
+        //lock mutex
+        g_mutex_lock(&data->logMutex);
+
         //copy logBuffer content
         gchar *newText = g_strdup(data->logBuffer->str);
 
         //clear logBuffer
         g_string_truncate(data->logBuffer, 0);
+
+        //unlock mutex
+        g_mutex_unlock(&data->logMutex);
 
         //append new text to GtkTextView
         appendTextToView(newText, data->textView);
@@ -324,6 +337,9 @@ void freeAll(struct initData *initialData) {
     if(initialData->logBuffer) {
         g_string_free(initialData->logBuffer, TRUE);
     }
+
+    //clear mutex
+    g_mutex_clear(&initialData->logMutex);
 
     free(initialData);
 }
